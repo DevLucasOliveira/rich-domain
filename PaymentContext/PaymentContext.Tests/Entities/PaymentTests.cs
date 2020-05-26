@@ -1,3 +1,4 @@
+
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PaymentContext.Domain.Entities;
@@ -7,7 +8,7 @@ using PaymentContext.Domain.ValueObjects;
 namespace Paymentcontext.Tests
 {
     [TestClass]
-    public class StudentTests
+    public class PaymentTests
     {
         private readonly Name _name;
         private readonly Email _email;
@@ -16,7 +17,7 @@ namespace Paymentcontext.Tests
         private readonly Student _student;
         private readonly Subscription _subscription;
 
-        public StudentTests()
+        public PaymentTests()
         {
             _name = new Name("Lucas", "Oliveira");
             _document = new Document("14825231080", EDocumentType.CPF);
@@ -24,40 +25,42 @@ namespace Paymentcontext.Tests
             _address = new Address("Rua 1", "890", "Bahia", "Sp", "Maceío", "Brazil", "01552010");
             _student = new Student(_name, _document, _email);
             _subscription = new Subscription(null);
-
         }
 
         [TestMethod]
-        public void ShouldReturnErrorWhenHadNoActiveSubscription()
+        public void ShouldReturnErrorWhenTotalIsZero()
         {
-            var payment = new PayPalPayment("12345678", DateTime.Now, DateTime.Now.AddDays(5), 10, 8, "devlucasoliveira", _document, _address, _email);
-            _subscription.AddPayment(payment);
-            _student.AddSubscription(_subscription);
-            _student.AddSubscription(_subscription);
-
-            Assert.IsTrue(_student.Invalid);
-
+            var payment = new PayPalPayment("12345678", DateTime.Now, DateTime.Now.AddDays(5), 0, 0, "devlucasoliveira", _document, _address, _email);
+            Assert.IsTrue(payment.Invalid);
         }
 
         [TestMethod]
-        public void ShouldReturnErrorWhenHadSubscriptionHasNoPayment()
+        public void ShouldReturnSucessWhenTotalGreaterThanZero()
         {
-            _student.AddSubscription(_subscription);
-            Assert.IsTrue(_student.Invalid);
-
+            var payment = new PayPalPayment("12345678", DateTime.Now, DateTime.Now.AddDays(5), 10, 0, "devlucasoliveira", _document, _address, _email);
+            Assert.IsTrue(payment.Valid);
         }
 
         [TestMethod]
-        public void ShouldReturnSuccessWhenAddSubscription()
+        public void ShouldReturnErrorWhenTotalPaidIsLowerThanTotal()
+        {
+            var payment = new PayPalPayment("12345678", DateTime.Now, DateTime.Now.AddDays(5), 10, 7, "devlucasoliveira", _document, _address, _email);
+            Assert.IsTrue(payment.Invalid);
+        }
+
+        [TestMethod]
+        public void ShouldReturnSucessWhenTotalPaidIsAreEqualsTotal()
         {
             var payment = new PayPalPayment("12345678", DateTime.Now, DateTime.Now.AddDays(5), 10, 10, "devlucasoliveira", _document, _address, _email);
-            _subscription.AddPayment(payment);
-            _student.AddSubscription(_subscription);
-
-            Assert.IsTrue(_student.Valid);
-
+            Assert.IsTrue(payment.Valid);
         }
+
+
+
 
 
     }
+
+
+
 }
