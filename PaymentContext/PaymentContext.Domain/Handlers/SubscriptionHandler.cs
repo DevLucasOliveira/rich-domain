@@ -54,7 +54,7 @@ namespace PaymentContext.Domain.Handlers
             var subscription = new Subscription(DateTime.Now.AddMonths(1));
             var payment = new BoletoPayment(
                 command.BarCode,
-                command.boletoNumber,
+                command.BoletoNumber,
                 command.PaidDate,
                 command.ExpireDate,
                 command.Total,
