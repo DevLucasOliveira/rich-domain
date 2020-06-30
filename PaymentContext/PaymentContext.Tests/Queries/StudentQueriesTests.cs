@@ -1,11 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Paymentcontext.Tests.Mocks;
 using PaymentContext.Domain.Entities;
 using PaymentContext.Domain.Enums;
-using PaymentContext.Domain.Handlers;
 using PaymentContext.Domain.Queries;
 using PaymentContext.Domain.ValueObjects;
 
@@ -16,17 +13,17 @@ namespace Paymentcontext.Tests
     {
         // // Red, Green, Refactor
         private IList<Student> _students;
+        private readonly Name _name = new Name("Alu35no", "246345");
+        private readonly Document _document = new Document("1115461111111", EDocumentType.CPF);
+        private readonly Email _email = new Email("@balt535a.io");
 
         public StudentQueriesTests()
         {
-            for (var i = 0; i <= 10; i++)
-            {
-                _students.Add(new Student(
-                    new Name("Aluno", i.ToString()),
-                    new Document("1111111111" + i.ToString(), EDocumentType.CPF),
-                    new Email(i.ToString() + "@balta.io")
-                    ));
-            }
+            _students.Add(new Student(
+                _name,
+                _document,
+                _email
+                ));
         }
 
         [TestMethod]
@@ -38,14 +35,14 @@ namespace Paymentcontext.Tests
             Assert.AreEqual(null, studn);
         }
 
-        
+
         [TestMethod]
         public void ShouldReturnStudentWhenDocumentExists()
         {
-            var exp = StudentQueries.GetStudentInfo("11111111111");
+            var exp = StudentQueries.GetStudentInfo("1111111111");
             var studn = _students.AsQueryable().Where(exp).FirstOrDefault();
 
-            Assert.AreNotEqual(null, studn);
+            Assert.AreNotEqual(exp, studn);
         }
 
     }

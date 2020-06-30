@@ -21,8 +21,9 @@ namespace Paymentcontext.Tests
         {
             _name = new Name("Lucas", "Oliveira");
             _document = new Document("14825231080", EDocumentType.CPF);
+            _document.Validate();
             _email = new Email("lucasoliveira.si@outlook.com");
-            _address = new Address("Rua 1", "890", "Bahia", "Sp", "Maceío", "Brazil", "01552010");
+            _address = new Address("Coronel Frias", "890", "Bahia", "Sp", "Maceío", "Brazil", "01552010");
             _student = new Student(_name, _document, _email);
             _subscription = new Subscription(null);
         }
@@ -30,29 +31,29 @@ namespace Paymentcontext.Tests
         [TestMethod]
         public void ShouldReturnErrorWhenTotalIsZero()
         {
-            var payment = new PayPalPayment("12345678", DateTime.Now, DateTime.Now.AddDays(5), 0, 0, "devlucasoliveira", _document, _address, _email);
-            Assert.IsTrue(payment.Invalid);
+            var payment = new PayPalPayment("123456789929120", DateTime.Now, DateTime.Now.AddDays(5), 0, 0, "devlucasoliveira", _document, _address, _email);
+            Assert.AreEqual(payment.Valid, false);
         }
 
         [TestMethod]
         public void ShouldReturnSucessWhenTotalGreaterThanZero()
         {
-            var payment = new PayPalPayment("12345678", DateTime.Now, DateTime.Now.AddDays(5), 10, 0, "devlucasoliveira", _document, _address, _email);
-            Assert.IsTrue(payment.Valid);
+            var payment = new PayPalPayment("123423335678", DateTime.Now, DateTime.Now.AddDays(5), 10, 10, "devlucasoliveira", _document, _address, _email);
+            Assert.AreEqual(payment.Valid, true);
         }
 
         [TestMethod]
         public void ShouldReturnErrorWhenTotalPaidIsLowerThanTotal()
         {
             var payment = new PayPalPayment("12345678", DateTime.Now, DateTime.Now.AddDays(5), 10, 7, "devlucasoliveira", _document, _address, _email);
-            Assert.IsTrue(payment.Invalid);
+            Assert.AreEqual(payment.Valid, false);
         }
 
         [TestMethod]
         public void ShouldReturnSucessWhenTotalPaidIsAreEqualsTotal()
         {
             var payment = new PayPalPayment("12345678", DateTime.Now, DateTime.Now.AddDays(5), 10, 10, "devlucasoliveira", _document, _address, _email);
-            Assert.IsTrue(payment.Valid);
+            Assert.AreEqual(payment.Valid, true);
         }
 
 

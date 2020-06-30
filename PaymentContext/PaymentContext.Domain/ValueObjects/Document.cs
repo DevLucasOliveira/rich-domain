@@ -13,14 +13,14 @@ namespace PaymentContext.Domain.ValueObjects
 
             AddNotifications(new Contract()
                 .Requires()
-                .IsTrue(Validate(), "Document.Number", "Documento inválido"));
+                .IsTrue(Validate(), "Number", "Documento inválido"));
         }
 
         public string Number { get; private set; }
         public EDocumentType Type { get; private set; }
 
 
-        private bool Validate()
+        public bool Validate()
         {
             if (Type == EDocumentType.CNPJ && Number.Length == 14)
                 return true;
